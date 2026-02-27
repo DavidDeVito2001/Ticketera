@@ -1,8 +1,8 @@
-# 🎫 SmartTicket Pro: Gestión Inteligente de Tareas y Solicitudes
+# 🎫 Ticketera: Gestión Inteligente de Tareas y Solicitudes
 
 ### **Transformando la eficiencia operativa con Google Apps Script**
 
-**SmartTicket Pro** es una solución empresarial de vanguardia diseñada para centralizar, transparentar y acelerar la gestión de requerimientos internos. Olvídate de los correos perdidos y las solicitudes por chat; nuestra plataforma ofrece un ecosistema fluido donde la trazabilidad y la rendición de cuentas son la norma.
+**La Ticketera** es una solución diseñada para centralizar, transparentar y acelerar la gestión de requerimientos internos. Olvídate de los correos perdidos y las solicitudes por chat; nuestra plataforma ofrece un ecosistema fluido donde la trazabilidad y la rendición de cuentas son la norma.
 
 ---
 
@@ -42,7 +42,7 @@ En un entorno corporativo dinámico, la comunicación suele ser el cuello de bot
 
 ## 💼 Impacto en el Negocio
 
-Implementar **SmartTicket Pro** no es solo instalar una herramienta; es adoptar una cultura de cumplimiento.
+Implementar la **Ticketera** 
 *   **Reduce** en un 40% el tiempo de resolución de incidencias.
 *   **Elimina** el ruido de comunicación en canales informales.
 *   **Optimiza** la asignación de recursos mediante fechas estimadas de finalización.
