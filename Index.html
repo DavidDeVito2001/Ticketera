@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Tickets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-bg: rgba(99, 102, 241, 0.08);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --error: #ef4444;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --info: #3b82f6;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --purple: #a855f7;
+            --purple-bg: rgba(168, 85, 247, 0.1);
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --bg-hover: #2d3a4f;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ---- Login ---- */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: radial-gradient(ellipse at top, #1e1b4b 0%, var(--bg) 60%);
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .login-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .login-icon .material-icons-round {
+            font-size: 36px;
+            color: #fff;
+        }
+
+        .login-card h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .login-card .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin-bottom: 28px;
+        }
+
+        .login-error {
+            background: var(--error-bg);
+            color: var(--error);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .app-screen {
+            display: none;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        /* ---- Header ---- */
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #7c3aed 100%);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-left h1 .material-icons-round {
+            font-size: 24px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .user-badge .material-icons-round {
+            font-size: 16px;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: var(--transition);
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-logout .material-icons-round {
+            font-size: 15px;
+        }
+
+        /* ---- Nav Tabs ---- */
+        .nav-tabs {
+            display: flex;
+            gap: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .nav-tab {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-tab.active {
+            background: #fff;
+            color: var(--primary-dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-tab .material-icons-round {
+            font-size: 16px;
+        }
+
+        .nav-tab .tab-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .nav-tab.active .tab-count {
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+        }
+
+        /* ---- Container ---- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* ---- Views ---- */
+        .view {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- Card ---- */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .card+.card {
+            margin-top: 16px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title .material-icons-round {
+            font-size: 22px;
+            color: var(--primary-light);
+        }
+
+        /* ---- Form ---- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-bg);
+        }
+
+        .form-control:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 10.5l-5-5h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ---- File Upload ---- */
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload .material-icons-round {
+            font-size: 32px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .file-upload p {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        .file-upload .file-name {
+            color: var(--primary-light);
+            font-weight: 500;
+            margin-top: 6px;
+            font-size: 0.85rem;
+        }
+
+        .file-preview {
+            margin-top: 10px;
+            max-width: 180px;
+            max-height: 130px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .upload-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* ---- Button ---- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-input);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ---- Tickets Grid ---- */
+        .tickets-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ticket-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 22px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .ticket-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .ticket-id {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary-light);
+            background: var(--primary-bg);
+            padding: 8px 14px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        .ticket-info h4 {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .ticket-info p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .ticket-info .desc-preview {
+            margin-top: 3px;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.76rem;
+        }
+
+        .ticket-meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-end;
+        }
+
+        .ticket-meta .meta-date {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+        }
+
+        /* ---- Badge ---- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .badge-pendiente {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        .badge-aprobado {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+
+        .badge-en-proceso {
+            background: var(--primary-bg);
+            color: var(--primary-light);
+        }
+
+        .badge-finalizado {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        /* ---- Modal ---- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px;
+            width: 100%;
+            max-width: 540px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: modalIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.88rem;
+            gap: 12px;
+        }
+
+        .detail-row span:first-child {
+            color: var(--text-secondary);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .detail-row span:last-child {
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .modal-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 20px 0;
+        }
+
+        .date-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* ---- Toast ---- */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn 0.4s ease, toastOut 0.4s ease 3s forwards;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast-success {
+            background: #065f46;
+            color: #a7f3d0;
+        }
+
+        .toast-error {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+        }
+
+        /* ---- Spinner ---- */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ---- Empty State ---- */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .material-icons-round {
+            font-size: 52px;
+            margin-bottom: 14px;
+            opacity: 0.4;
+        }
+
+        .empty-state h3 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+        }
+
+        /* ---- Stats ---- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .section-title .material-icons-round {
+            font-size: 20px;
+            color: var(--primary-light);
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+
+            .header-left {
+                flex-wrap: wrap;
+            }
+
+            .header-left h1 {
+                font-size: 1rem;
+            }
+
+            .header-right {
+                justify-content: space-between;
+            }
+
+            .nav-tabs {
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .nav-tab {
+                flex: 1;
+                justify-content: center;
+                font-size: 0.72rem;
+                padding: 7px 6px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .ticket-card {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .ticket-meta {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .modal {
+                padding: 22px;
+            }
+
+            .login-card {
+                padding: 28px 22px;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .upload-row {
+                grid-template-columns: 1fr;
+            }
+
+            .date-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============ LOGIN ============ -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-icon">
+                <span class="material-icons-round">confirmation_number</span>
+            </div>
+            <h2>Sistema de Tickets</h2>
+            <p class="subtitle">Ingresá tu DNI para continuar</p>
+            <div class="login-error" id="loginError"></div>
+            <form onsubmit="hacerLogin(event)">
+                <div class="form-group">
+                    <label for="dniInput">DNI</label>
+                    <input type="text" class="form-control" id="dniInput" placeholder="Ej: 12345678" required
+                        autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="btnLogin">
+                    <span class="material-icons-round">login</span> Ingresar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ APP ============ -->
+    <div class="app-screen" id="appScreen">
+
+        <div class="header">
+            <div class="header-left">
+                <h1><span class="material-icons-round">confirmation_number</span> Tickets</h1>
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="switchView('solicitar')" id="tabSolicitar">
+                        <span class="material-icons-round">add_circle</span> Solicitar
+                    </button>
+                    <button class="nav-tab" onclick="switchView('enviados')" id="tabEnviados">
+                        <span class="material-icons-round">call_made</span> Enviados
+                        <span class="tab-count" id="countEnviados">0</span>
+                    </button>
+                    <button class="nav-tab" onclick="switchView('recibidos')" id="tabRecibidos">
+                        <span class="material-icons-round">call_received</span> Recibidos
+                        <span class="tab-count" id="countRecibidos">0</span>
+                    </button>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="user-badge">
+                    <span class="material-icons-round">person</span>
+                    <span id="userDisplayName">Usuario</span>
+                </div>
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <span class="material-icons-round">logout</span> Salir
+                </button>
+            </div>
+        </div>
+
+        <div class="toast-container" id="toastContainer"></div>
+
+        <div class="container">
+
+            <!-- ===== VIEW: Solicitar ===== -->
+            <div class="view active" id="viewSolicitar">
+                <div class="card">
+                    <div class="card-title">
+                        <span class="material-icons-round">edit_note</span>
+                        Solicitar Ticket
+                    </div>
+                    <form id="formTicket" onsubmit="enviarTicket(event)">
+                        <div class="form-group">
+                            <label>Solicitante (vos)</label>
+                            <input type="text" class="form-control" id="solicitanteNombre" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Solicitado (a quién va dirigido)</label>
+                            <select class="form-control" id="solicitadoSelect" required
+                                title="Seleccionar a quién se le solicita">
+                                <option value="">Cargando...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tipo de Tarea</label>
+                            <select class="form-control" id="tipoTarea" required title="Seleccionar tipo de tarea">
+                                <option value="">Seleccionar tipo...</option>
+                                <option value="Error">🔴 Error</option>
+                                <option value="Mejora">🟢 Mejora</option>
+                                <option value="Consulta">🔵 Consulta</option>
+                                <option value="Proyecto">🟣 Proyecto</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripción / Detalle</label>
+                            <textarea class="form-control" id="descripcion"
+                                placeholder="Describe brevemente el ticket..." rows="3"></textarea>
+                        </div>
+
+                        <div class="upload-row">
+                            <div class="form-group">
+                                <label>Foto Evidencia (opcional)</label>
+                                <div class="file-upload" onclick="document.getElementById('fotoInput').click()">
+                                    <input type="file" id="fotoInput" accept="image/*"
+                                        onchange="previewFile(this, 'fotoPreview', 'fotoName')">
+                                    <span class="material-icons-round">image</span>
+                                    <p>Subir imagen</p>
+                                    <div class="file-name" id="fotoName"></div>
+                                    <img class="file-preview" id="fotoPreview" alt="Vista previa">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>PDF Adjunto (opcional)</label>
+                                <div class="file-upload" onclick="document.getElementById('pdfInput').click()">
+                                    <input type="file" id="pdfInput" accept="application/pdf"
+                                        onchange="previewFile(this, null, 'pdfName')">
+                                    <span class="material-icons-round">picture_as_pdf</span>
+                                    <p>Subir PDF</p>
+                                    <div class="file-name" id="pdfName"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="btnEnviar">
+                            <span class="material-icons-round">send</span> Enviar Ticket
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== VIEW: Enviados ===== -->
+            <div class="view" id="viewEnviados">
+                <div class="section-title">
+                    <span class="material-icons-round">call_made</span>
+                    Tickets que enviaste
+                </div>
+                <div id="statsEnviados"></div>
+                <div id="ticketsEnviados">
+                    <div class="empty-state">
+                        <span class="material-icons-round">inbox</span>
+                        <h3>Cargando...</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== VIEW: Recibidos ===== -->
+            <div class="view" id="viewRecibidos">
+                <div class="section-title">
+                    <span class="material-icons-round">call_received</span>
+                    Tickets que te asignaron
+                </div>
+                <div id="statsRecibidos"></div>
+                <div id="ticketsRecibidos">
+                    <div class="empty-state">
+                        <span class="material-icons-round">inbox</span>
+                        <h3>Cargando...</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============ MODAL ============ -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>
+                    <span class="material-icons-round" style="color:var(--primary-light)">assignment</span>
+                    <span id="modalTitle">Ticket #</span>
+                </h3>
+                <button class="modal-close" onclick="cerrarModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+
+            <div id="modalDetalles"></div>
+
+            <!-- Editable (Recibidos) -->
+            <div id="modalEditSection" style="display:none;">
+                <hr class="modal-divider">
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select class="form-control" id="modalEstado" title="Cambiar estado">
+                        <option value="Pendiente">⏳ Pendiente</option>
+                        <option value="Aprobado">✅ Aprobado</option>
+                        <option value="En Proceso">🔄 En Proceso</option>
+                        <option value="Finalizado">🏁 Finalizado</option>
+                    </select>
+                </div>
+                <div class="date-row">
+                    <div class="form-group">
+                        <label>Fecha Estimada</label>
+                        <input type="date" class="form-control" id="modalFechaEstimada">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Cierre</label>
+                        <input type="date" class="form-control" id="modalFechaCierre">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Observación</label>
+                    <textarea class="form-control" id="modalObservacion" rows="3"
+                        placeholder="Agregar observación..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                    <button class="btn btn-primary" id="btnGuardar" onclick="guardarCambios()">
+                        <span class="material-icons-round">save</span> Guardar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Read-only (Enviados) -->
+            <div id="modalReadOnlySection" style="display:none;">
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var usuarioLogueado = null;
+        var currentTicketId = null;
+        var currentModalMode = null;
+        var solicitantesData = [];
+
+        // ---- LOGIN ----
+        function hacerLogin(e) {
+            e.preventDefault();
+            var dni = document.getElementById('dniInput').value.trim();
+            if (!dni) return;
+            var btn = document.getElementById('btnLogin');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Verificando...';
+            document.getElementById('loginError').style.display = 'none';
+
+            google.script.run
+                .withSuccessHandler(function (resp) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-icons-round">login</span> Ingresar';
+                    if (resp.success) {
+                        usuarioLogueado = resp.usuario;
+                        iniciarApp();
+                    } else {
+                        document.getElementById('loginError').textContent = resp.message;
+                        document.getElementById('loginError').style.display = 'block';
+                    }
+                })
+                .withFailureHandler(function (err) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-icons-round">login</span> Ingresar';
+                    document.getElementById('loginError').textContent = 'Error: ' + err.message;
+                    document.getElementById('loginError').style.display = 'block';
+                })
+                .loginPorDNI(dni);
+        }
+
+        function iniciarApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.add('active');
+            document.getElementById('userDisplayName').textContent = usuarioLogueado.nombre;
+            document.getElementById('solicitanteNombre').value = usuarioLogueado.nombre + ' — ' + usuarioLogueado.area;
+            cargarSolicitantes();
+            cargarContadores();
+        }
+
+        function cerrarSesion() {
+            usuarioLogueado = null;
+            document.getElementById('appScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('dniInput').value = '';
+            switchView('solicitar');
+        }
+
+        // ---- Solicitantes ----
+        function cargarSolicitantes() {
+            google.script.run
+                .withSuccessHandler(function (data) {
+                    solicitantesData = data;
+                    var sel = document.getElementById('solicitadoSelect');
+                    sel.innerHTML = '<option value="">Seleccionar persona...</option>';
+                    data.forEach(function (s) {
+                        if (s.nombre.toLowerCase() !== usuarioLogueado.nombre.toLowerCase()) {
+                            var opt = document.createElement('option');
+                            opt.value = s.nombre;
+                            opt.textContent = s.nombre + ' — ' + s.area;
+                            sel.appendChild(opt);
+                        }
+                    });
+                })
+                .withFailureHandler(function (err) {
+                    showToast('Error cargando solicitantes: ' + err.message, 'error');
+                })
+                .getSolicitantes();
+        }
+
+        // ---- Counters ----
+        function cargarContadores() {
+            google.script.run.withSuccessHandler(function (t) {
+                document.getElementById('countEnviados').textContent = t.length;
+            }).getMisSolicitudes(usuarioLogueado.nombre);
+
+            google.script.run.withSuccessHandler(function (t) {
+                document.getElementById('countRecibidos').textContent = t.length;
+            }).getTicketsRecibidos(usuarioLogueado.nombre);
+        }
+
+        // ---- Navigation ----
+        function switchView(view) {
+            document.querySelectorAll('.view').forEach(function (v) { v.classList.remove('active'); });
+            document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); });
+            if (view === 'solicitar') {
+                document.getElementById('viewSolicitar').classList.add('active');
+                document.getElementById('tabSolicitar').classList.add('active');
+            } else if (view === 'enviados') {
+                document.getElementById('viewEnviados').classList.add('active');
+                document.getElementById('tabEnviados').classList.add('active');
+                cargarEnviados();
+            } else if (view === 'recibidos') {
+                document.getElementById('viewRecibidos').classList.add('active');
+                document.getElementById('tabRecibidos').classList.add('active');
+                cargarRecibidos();
+            }
+        }
+
+        // ---- File Preview ----
+        function previewFile(input, previewId, nameId) {
+            var file = input.files[0];
+            if (!file) return;
+            document.getElementById(nameId).textContent = file.name;
+            if (previewId && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var img = document.getElementById(previewId);
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ---- Enviar Ticket ----
+        function enviarTicket(e) {
+            e.preventDefault();
+            var btn = document.getElementById('btnEnviar');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+            var data = {
+                solicitante: usuarioLogueado.nombre,
+                solicitado: document.getElementById('solicitadoSelect').value,
+                tipoTarea: document.getElementById('tipoTarea').value,
+                descripcion: document.getElementById('descripcion').value,
+                foto: null, fotoNombre: null,
+                pdf: null, pdfNombre: null
+            };
+
+            // Chain: read foto -> read pdf -> send
+            readFileAsBase64('fotoInput', function (b64, name) {
+                data.foto = b64;
+                data.fotoNombre = name;
+                readFileAsBase64('pdfInput', function (b642, name2) {
+                    data.pdf = b642;
+                    data.pdfNombre = name2;
+                    enviarAlServidor(data);
+                });
+            });
+        }
+
+        function readFileAsBase64(inputId, callback) {
+            var input = document.getElementById(inputId);
+            if (input.files.length > 0) {
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    callback(ev.target.result.split(',')[1], input.files[0].name);
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                callback(null, null);
+            }
+        }
+
+        function enviarAlServidor(data) {
+            google.script.run
+                .withSuccessHandler(function (resp) {
+                    var btn = document.getElementById('btnEnviar');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-icons-round">send</span> Enviar Ticket';
+                    if (resp.success) {
+                        showToast(resp.message, 'success');
+                        document.getElementById('formTicket').reset();
+                        document.getElementById('solicitanteNombre').value = usuarioLogueado.nombre + ' — ' + usuarioLogueado.area;
+                        document.getElementById('fotoPreview').style.display = 'none';
+                        document.getElementById('fotoName').textContent = '';
+                        document.getElementById('pdfName').textContent = '';
+                        cargarContadores();
+                    } else {
+                        showToast('Error: ' + resp.message, 'error');
+                    }
+                })
+                .withFailureHandler(function (err) {
+                    var btn = document.getElementById('btnEnviar');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-icons-round">send</span> Enviar Ticket';
+                    showToast('Error: ' + err.message, 'error');
+                })
+                .crearTicket(data);
+        }
+
+        // ---- Cargar Enviados / Recibidos ----
+        function cargarEnviados() {
+            var c = document.getElementById('ticketsEnviados');
+            c.innerHTML = spinnerHTML();
+            google.script.run.withSuccessHandler(function (t) {
+                renderStats(t, 'statsEnviados');
+                renderTicketList(t, c, 'readonly');
+                document.getElementById('countEnviados').textContent = t.length;
+            }).withFailureHandler(function (e) { c.innerHTML = errorHTML(e.message); })
+                .getMisSolicitudes(usuarioLogueado.nombre);
+        }
+
+        function cargarRecibidos() {
+            var c = document.getElementById('ticketsRecibidos');
+            c.innerHTML = spinnerHTML();
+            google.script.run.withSuccessHandler(function (t) {
+                renderStats(t, 'statsRecibidos');
+                renderTicketList(t, c, 'edit');
+                document.getElementById('countRecibidos').textContent = t.length;
+            }).withFailureHandler(function (e) { c.innerHTML = errorHTML(e.message); })
+                .getTicketsRecibidos(usuarioLogueado.nombre);
+        }
+
+        // ---- Render helpers ----
+        function spinnerHTML() {
+            return '<div style="text-align:center;padding:40px;"><span class="spinner" style="width:32px;height:32px;border-width:3px;border-color:rgba(99,102,241,0.3);border-top-color:var(--primary);"></span></div>';
+        }
+        function errorHTML(msg) {
+            return '<div class="empty-state"><span class="material-icons-round">error_outline</span><h3>Error</h3><p>' + msg + '</p></div>';
+        }
+
+        function renderStats(tickets, containerId) {
+            var total = tickets.length, p = 0, ep = 0, f = 0;
+            tickets.forEach(function (t) {
+                var e = t.estado.toLowerCase();
+                if (e === 'pendiente') p++;
+                else if (e === 'en proceso') ep++;
+                else if (e === 'finalizado') f++;
+            });
+            document.getElementById(containerId).innerHTML =
+                '<div class="stats-row">' +
+                '<div class="stat-card"><div class="stat-value" style="color:var(--primary-light)">' + total + '</div><div class="stat-label">Total</div></div>' +
+                '<div class="stat-card"><div class="stat-value" style="color:var(--warning)">' + p + '</div><div class="stat-label">Pendientes</div></div>' +
+                '<div class="stat-card"><div class="stat-value" style="color:var(--info)">' + ep + '</div><div class="stat-label">En Proceso</div></div>' +
+                '<div class="stat-card"><div class="stat-value" style="color:var(--success)">' + f + '</div><div class="stat-label">Finalizados</div></div>' +
+                '</div>';
+        }
+
+        function renderTicketList(tickets, container, mode) {
+            if (!tickets || tickets.length === 0) {
+                container.innerHTML = '<div class="empty-state"><span class="material-icons-round">inbox</span><h3>Sin tickets</h3><p>No hay tickets por aquí</p></div>';
+                return;
+            }
+            tickets.sort(function (a, b) { return b.idTicket - a.idTicket; });
+            var html = '<div class="tickets-grid">';
+            tickets.forEach(function (t) {
+                var badgeClass = 'badge-' + t.estado.toLowerCase().replace(/ /g, '-');
+                var persona = (mode === 'readonly') ? t.solicitado : t.solicitante;
+                var personaLabel = (mode === 'readonly') ? 'Para: ' : 'De: ';
+
+                html += '<div class="ticket-card" onclick=\'abrirModal(' + JSON.stringify(t).replace(/'/g, "\\'") + ',"' + mode + '")\'>';
+                html += '<div class="ticket-id">#' + t.idTicket + '</div>';
+                html += '<div class="ticket-info">';
+                html += '<h4>' + t.tipoTarea + '</h4>';
+                html += '<p>' + personaLabel + persona + ' · ' + t.fechaApertura + '</p>';
+                if (t.descripcion) {
+                    html += '<p class="desc-preview">"' + t.descripcion.substring(0, 60) + (t.descripcion.length > 60 ? '...' : '') + '"</p>';
+                }
+                html += '</div>';
+                html += '<div class="ticket-meta">';
+                html += '<span class="badge ' + badgeClass + '">' + t.estado + '</span>';
+                if (t.fechaEstimada) {
+                    html += '<span class="meta-date">Est: ' + t.fechaEstimada + '</span>';
+                }
+                if (t.fechaCierre) {
+                    html += '<span class="meta-date">Cierre: ' + t.fechaCierre + '</span>';
+                }
+                html += '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // ---- Modal ----
+        function abrirModal(ticket, mode) {
+            currentTicketId = ticket.idTicket;
+            currentModalMode = mode;
+            document.getElementById('modalTitle').textContent = 'Ticket #' + ticket.idTicket;
+
+            var d = '';
+            d += detailRow('Solicitante', ticket.solicitante);
+            d += detailRow('Solicitado', ticket.solicitado);
+            d += detailRow('Tipo', ticket.tipoTarea);
+            d += detailRow('Fecha Apertura', ticket.fechaApertura);
+            d += detailRow('Estado', '<span class="badge badge-' + ticket.estado.toLowerCase().replace(/ /g, '-') + '">' + ticket.estado + '</span>');
+            if (ticket.descripcion) {
+                d += detailRow('Descripción', ticket.descripcion);
+            }
+            if (ticket.fechaEstimada) {
+                d += detailRow('Fecha Estimada', ticket.fechaEstimada);
+            }
+            if (ticket.fechaCierre) {
+                d += detailRow('Fecha Cierre', ticket.fechaCierre);
+            }
+            if (ticket.observacion) {
+                d += detailRow('Observación', ticket.observacion);
+            }
+            if (ticket.fotoEvidencia) {
+                d += detailRow('Foto', '<a href="' + ticket.fotoEvidencia + '" target="_blank" style="color:var(--primary-light)">Ver imagen</a>');
+            }
+            if (ticket.pdfEvidencia) {
+                d += detailRow('PDF', '<a href="' + ticket.pdfEvidencia + '" target="_blank" style="color:var(--primary-light)">Ver PDF</a>');
+            }
+            document.getElementById('modalDetalles').innerHTML = d;
+
+            if (mode === 'edit') {
+                document.getElementById('modalEditSection').style.display = 'block';
+                document.getElementById('modalReadOnlySection').style.display = 'none';
+                document.getElementById('modalEstado').value = ticket.estado;
+                document.getElementById('modalObservacion').value = ticket.observacion || '';
+                document.getElementById('modalFechaEstimada').value = parseDateForInput(ticket.fechaEstimada);
+                document.getElementById('modalFechaCierre').value = parseDateForInput(ticket.fechaCierre);
+            } else {
+                document.getElementById('modalEditSection').style.display = 'none';
+                document.getElementById('modalReadOnlySection').style.display = 'block';
+            }
+
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function detailRow(label, value) {
+            return '<div class="detail-row"><span>' + label + '</span><span>' + value + '</span></div>';
+        }
+
+        function parseDateForInput(dateStr) {
+            if (!dateStr) return '';
+            var parts = dateStr.split('/');
+            if (parts.length === 3) return parts[2] + '-' + parts[1] + '-' + parts[0];
+            return '';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            currentTicketId = null;
+            currentModalMode = null;
+        }
+
+        function closeModalBg(event) {
+            if (event.target === document.getElementById('modalOverlay')) cerrarModal();
+        }
+
+        // ---- Guardar ----
+        function guardarCambios() {
+            var btn = document.getElementById('btnGuardar');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Guardando...';
+
+            var data = {
+                idTicket: currentTicketId,
+                estado: document.getElementById('modalEstado').value,
+                fechaEstimada: document.getElementById('modalFechaEstimada').value || null,
+                fechaCierre: document.getElementById('modalFechaCierre').value || null,
+                observacion: document.getElementById('modalObservacion').value
+            };
+
+            google.script.run
+                .withSuccessHandler(function (resp) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-icons-round">save</span> Guardar';
+                    if (resp.success) {
+                        showToast(resp.message, 'success');
+                        cerrarModal();
+                        cargarRecibidos();
+                        cargarContadores();
+                    } else {
+                        showToast('Error: ' + resp.message, 'error');
+                    }
+                })
+                .withFailureHandler(function (err) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<span class="material-icons-round">save</span> Guardar';
+                    showToast('Error: ' + err.message, 'error');
+                })
+                .actualizarTicket(data);
+        }
+
+        // ---- Toast ----
+        function showToast(message, type) {
+            var container = document.getElementById('toastContainer');
+            var toast = document.createElement('div');
+            toast.className = 'toast toast-' + type;
+            var icon = type === 'success' ? 'check_circle' : 'error';
+            toast.innerHTML = '<span class="material-icons-round">' + icon + '</span> ' + message;
+            container.appendChild(toast);
+            setTimeout(function () { toast.remove(); }, 3500);
+        }
+    </script>
+
+</body>
+
+</html>
